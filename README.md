@@ -37,7 +37,7 @@ The **Naive Bayes Classifier** proved to be the most effective model, balancing 
 Future work could include expanding the dataset and exploring additional models, such as Support Vector Machines (SVM) and Random Forests, to compare their performance in medical diagnostics.
 
 ## Source Code:
-- [Naive Bayes Colab](https://colab.research.google.com/drive/1FGzkOi9FayrQfc-wwzVzjgA2ifZdaorJ?usp=sharing)
-- [Logistic Regression Colab](https://colab.research.google.com/drive/1GoDmu8iHZ_ZNqdUI0tBFe756cd1-neTh?usp=sharing)
-- [Multi-Layer Neural Network Colab](https://colab.research.google.com/drive/1q2YcvIzLkzRbRYWB0tDyoJq4F5tqCx1v?usp=sharing)
+- [Naive Bayes Colab](https://github.com/anamika8/Binary-Classification-for-Diabetes-Detection/blob/main/naivebayes.ipynb)
+- [Logistic Regression Colab](https://github.com/anamika8/Binary-Classification-for-Diabetes-Detection/blob/main/logisticregression.ipynb)
+- [Multi-Layer Neural Network Colab](https://github.com/anamika8/Binary-Classification-for-Diabetes-Detection/blob/main/multilayer_neural_network.ipynb)
 
