@@ -13,17 +13,17 @@ The dataset used includes 390 entries and various attributes like cholesterol, g
 ### 1. Naive Bayes Classifier:
 - Based on Bayes' Theorem, this model assumes independence among features and is suitable for small datasets. It uses a combination of categorical and Gaussian distributions.
 - **Accuracy**: 92.3%  
-- **Package**: Mixed Naive Bayes.
+- **Package**: [Mixed Naive Bayes](https://pypi.org/project/mixed-naive-bayes/).
 
 ### 2. Logistic Regression:
 - A linear model that predicts the probability of diabetes based on input features. Logistic regression is well-suited for binary classification problems and is robust with small datasets.
 - **Accuracy**: 91.0%  
-- **Reference**: Logistic Regression Documentation.
+- **Reference**: [Logistic Regression Documentation](https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression).
 
 ### 3. Multi-Layer Neural Network (MLNN):
 - This deep learning model consists of two hidden layers, utilizing the `tanh` activation function for hidden layers and the `sigmoid` function for the output. It is designed to handle complex, non-linear relationships.
 - **Accuracy**: 92.3%  
-- **Reference**: A comprehensive review of machine learning techniques on diabetes detection.
+- **Reference**: [A comprehensive review of machine learning techniques on diabetes detection](https://link.springer.com/article/10.1186/s42492-021-00097-7).
 
 ## Key Findings:
 - All models achieved approximately 92% accuracy on the test set. However, Naive Bayes had the best calibration and interpretability, making it the most appropriate model for the dataset.
