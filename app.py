@@ -1,15 +1,16 @@
 from flask import Flask, request, jsonify
 import pickle
 import io
+import os
 import pandas as pd
 import json
 from diabetes_detection_nn import load_dataset, get_train_test_data, train_NN_model
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from azure.storage.blob import BlobServiceClient
 
 app = Flask(__name__)
-container_name = 'mlmodels'
-blob_name = 'nn_model'
-connection_string = 'DefaultEndpointsProtocol=https;AccountName=nnmodel;AccountKey=D2QNBHJ5TaWF11P38n3WBAwU8HUF1GcnomvIsDllAd1yGl3t8onB1LS39P+nYDCekcHKLvlxmHAx+AStmz709Q==;EndpointSuffix=core.windows.net'
+BLOB_CONTAINER_NAME = 'mlmodels'
+BLOB_NAME = 'nn_model'
+CONNECTION_STRING = os.getenv('BLOB_CONNECTION_STRING')
 
 
 @app.route('/predict', methods=['GET'])
@@ -66,10 +67,10 @@ def is_stratified(original_proportion, train_proportion, test_proportion):
 def load_model_from_blob():
     try:
         # Connect to the Blob service
-        blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+        blob_service_client = BlobServiceClient.from_connection_string(CONNECTION_STRING)
         
         # Get a client for the container and blob
-        blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+        blob_client = blob_service_client.get_blob_client(container=BLOB_CONTAINER_NAME, blob=BLOB_NAME)
         
         # Download the blob (model) as a stream
         download_stream = blob_client.download_blob()
@@ -86,23 +87,23 @@ def load_model_from_blob():
 def upload_model_to_storage():
     try:
         # Initialize a connection to Azure Blob Storage
-        blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+        blob_service_client = BlobServiceClient.from_connection_string(CONNECTION_STRING)
         
         # Get a client to interact with the container
-        container_client = blob_service_client.get_container_client(container_name)
+        container_client = blob_service_client.get_container_client(BLOB_CONTAINER_NAME)
         
         # Create the container if it doesn't exist
         if not container_client.exists():
             container_client.create_container()
         
         # Get a client to interact with the blob (model file)
-        blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+        blob_client = blob_service_client.get_blob_client(container=BLOB_CONTAINER_NAME, blob=BLOB_NAME)
         
         # Open the local model file and upload it to the blob
         with open('model.pkl', 'rb') as data:
             blob_client.upload_blob(data, overwrite=True)
         
-        print(f"Model uploaded successfully to container '{container_name}' as blob '{blob_name}'")
+        print(f"Model uploaded successfully to container '{BLOB_CONTAINER_NAME}' as blob '{BLOB_NAME}'")
         return "Success"
     except Exception as e:
         print(f"Failed to upload model: {str(e)}")
