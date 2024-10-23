@@ -19,6 +19,7 @@ def predict():
     saved_model = load_model_from_blob()
     data = request.json
     df = pd.DataFrame([data])
+    print("User provided inputs:", df.to_string(index=False))
     prediction = saved_model.predict(df)
     return jsonify({"prediction": int(prediction[0])})
 
