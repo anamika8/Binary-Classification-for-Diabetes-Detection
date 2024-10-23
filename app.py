@@ -9,7 +9,7 @@ app = Flask(__name__)
 '''
 with open('model.pkl', 'rb') as f:
     model = pickle.load(f)
-'''
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -17,10 +17,11 @@ def predict():
     df = pd.DataFrame([data])
     prediction = model.predict(df)
     return jsonify({"prediction": int(prediction[0])})
+'''
 
 @app.route('/data', methods=['GET'])
 def data_head():
-    return load_dataset()
+    return load_dataset().to_json(orient='records')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
