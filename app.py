@@ -13,7 +13,7 @@ BLOB_NAME = os.getenv('MODEL_FILENAME')
 CONNECTION_STRING = os.getenv('BLOB_CONNECTION_STRING')
 
 
-@app.route('/predict', methods=['GET'])
+@app.route('/predict', methods=['POST'])
 def predict():
     # Load model
     saved_model = load_model_from_blob()
