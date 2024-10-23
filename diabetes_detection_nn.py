@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
 
 def load_dataset():
     dataset_file_path = f'diabetes.csv'
@@ -45,6 +47,22 @@ def get_train_test_data():
     X_train, X_test, y_train, y_test = train_test_split(scaled_data, y, test_size=0.2, random_state=42, stratify=y)
     return X_train, X_test, y_train, y_test, y
 
+def train_NN_model():
+    # getting the train data
+    X_train, X_test, y_train, y_test, y = get_train_test_data()
+    model = Sequential([
+        Dense(128, activation='tanh', input_shape=(X_train.shape[1],)),
+        Dense(64, activation='tanh'),
+        Dense(1, activation='sigmoid')  # Since it's a binary classification
+    ])
+    # compile the model
+    model.compile(optimizer='adam',
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+    # Training the model
+    model.fit(X_train, y_train, epochs=50, batch_size=10, validation_split=0.2)
+    return model
+
 
 if __name__ == "__main__":
-    load_dataset()
+    train_NN_model()
