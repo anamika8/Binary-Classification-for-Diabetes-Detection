@@ -6,8 +6,10 @@ from diabetes_detection_nn import load_dataset
 app = Flask(__name__)
 
 # Load model
+'''
 with open('model.pkl', 'rb') as f:
     model = pickle.load(f)
+'''
 
 @app.route('/predict', methods=['POST'])
 def predict():
