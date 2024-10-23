@@ -16,8 +16,8 @@ def predict():
     prediction = model.predict(df)
     return jsonify({"prediction": int(prediction[0])})
 
-@app.route('/data-head', methods=['GET'])
-def predict():
+@app.route('/data', methods=['GET'])
+def data_head():
     return load_dataset()
 
 if __name__ == "__main__":
