@@ -8,8 +8,8 @@ from diabetes_detection_nn import load_dataset, get_train_test_data, train_NN_mo
 from azure.storage.blob import BlobServiceClient
 
 app = Flask(__name__)
-BLOB_CONTAINER_NAME = 'mlmodels'
-BLOB_NAME = 'nn_model'
+BLOB_CONTAINER_NAME = os.getenv('BLOB_CONTAINER_NAME')
+BLOB_NAME = os.getenv('MODEL_FILENAME')
 CONNECTION_STRING = os.getenv('BLOB_CONNECTION_STRING')
 
 
