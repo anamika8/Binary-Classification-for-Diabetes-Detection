@@ -4,7 +4,7 @@ import io
 import os
 import pandas as pd
 import json
-from diabetes_detection_nn import load_dataset, get_train_test_data, train_NN_model
+from diabetes_detection_nn import load_dataset, get_train_test_data, train_NN_model, feature_scaling
 from azure.storage.blob import BlobServiceClient
 
 app = Flask(__name__)
@@ -18,10 +18,10 @@ def predict():
     # Load model
     saved_model = load_model_from_blob()
     data = request.json
-    df = pd.DataFrame([data])
-    print("User provided inputs:", df.to_string(index=False))
-    prediction = saved_model.predict(df)
-    return jsonify({"prediction": int(prediction[0])})
+    print("User provided inputs:", data)
+    processed_input_df = format_user_input(data)
+    prediction = saved_model.predict(processed_input_df)
+    return jsonify({"prediction": prediction_stringify(int(prediction[0]))})
 
 
 @app.route('/train', methods=['POST'])
@@ -65,6 +65,12 @@ def is_stratified(original_proportion, train_proportion, test_proportion):
         return False
     return True
 
+def prediction_stringify(prediction_value):
+    if prediction_value == 0:
+        return "No Diabetes found"
+    else:
+        return "Diabetes is found"
+
 def load_model_from_blob():
     try:
         # Connect to the Blob service
@@ -83,7 +89,15 @@ def load_model_from_blob():
         return model
     except Exception as e:
         print(f"Error loading model from blob: {e}")
-        return None
+        try:
+            print("Fall back to loading the local model.pkl since blob download failed")
+            with open('model.pkl', 'rb') as f:
+                model = pickle.load(f)
+                print("Loaded model from local 'model.pkl'")
+                return model
+        except Exception as local_e:
+            print(f"Error loading model from local file: {local_e}")
+            return None
 
 def upload_model_to_storage():
     try:
@@ -108,8 +122,27 @@ def upload_model_to_storage():
         return "Success"
     except Exception as e:
         print(f"Failed to upload model: {str(e)}")
-        return "Failed"
+        return "Failed" 
 
+# formats user input in the format - `{"Pregnancies": 6, "Glucose": 148, "BloodPressure": 72, "SkinThickness": 35, "Insulin": 0, "BMI": 33.6, "DiabetesPedigreeFunction": 0.627, "Age": 50}` 
+# to dataframe and then scales it as necessary to be fit to be sent to the predict endpoint
+def format_user_input(input_data):
+    df = pd.DataFrame([input_data])
+    # Columns with comma decimal
+    columns_with_comma_decimal = ['chol_hdl_ratio', 'bmi', 'waist_hip_ratio']
+    for column in columns_with_comma_decimal:
+        df[column] = df[column].astype(str).str.replace(',', '.').astype(float)
+
+    # Encode 'gender' column
+    df['gender'] = df['gender'].map({'male': 0, 'female': 1})
+
+    # Handle missing values (if any)
+    df.fillna(df.median(), inplace=True)
+
+    # Apply feature scaling
+    scaled_data, _ = feature_scaling(df)
+
+    return scaled_data
 
 @app.route('/data', methods=['GET'])
 def data_head():

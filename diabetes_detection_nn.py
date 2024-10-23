@@ -13,8 +13,13 @@ def load_dataset():
     return df
 
 def feature_scaling(df):
-    X = df.drop('diabetes', axis=1)
-    y = df['diabetes']
+    # Check if 'diabetes' column exists, drop it if present
+    if 'diabetes' in df.columns:
+        X = df.drop('diabetes', axis=1)
+        y = df['diabetes']
+    else:
+        X = df
+        y = None
 
     scaler = StandardScaler()
 
@@ -23,6 +28,7 @@ def feature_scaling(df):
     return X_scaled, y
 
 def preprocess_data(df):
+    df = df.drop('patient_number', axis=1)
     columns_with_comma_decimal = ['chol_hdl_ratio', 'bmi', 'waist_hip_ratio']
     for column in columns_with_comma_decimal:
         df[column] = df[column].astype(str).str.replace(',', '.').astype(float)
@@ -45,6 +51,8 @@ def get_train_test_data():
     both training and testing sets will match the proportion in the full dataset y.
     '''
     X_train, X_test, y_train, y_test = train_test_split(scaled_data, y, test_size=0.2, random_state=42, stratify=y)
+    print("Sample training data: \n", X_train[:5])
+    print("Sample testing data: \n", X_test[:5])
     return X_train, X_test, y_train, y_test, y
 
 def train_NN_model():
