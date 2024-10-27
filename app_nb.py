@@ -11,6 +11,7 @@ app = Flask(__name__)
 
 @app.route('/data-nb', methods=['GET'])
 def data_head():
+    print("testing naive bayes model")
     return load_dataset().head().to_json(orient='records')
 
 if __name__ == "__main__":
