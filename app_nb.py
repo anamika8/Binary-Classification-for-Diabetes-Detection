@@ -15,4 +15,4 @@ def data_head():
     return load_dataset().head().to_json(orient='records')
 
 if __name__ == "__main__":
-    app_nb.run(host='0.0.0.0', port=5000)
+    app_nb.run(host='0.0.0.0', port=5001)
